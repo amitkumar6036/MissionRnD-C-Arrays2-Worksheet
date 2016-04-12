@@ -1,4 +1,4 @@
-/*
+/*\\
 OVERVIEW: You are given 2 bank statements that are ordered by date. 
 Write a function that returns dates common to both statements
 (ie both statements have transactions in these dates).
@@ -17,6 +17,7 @@ NOTES:
 */
 
 #include <iostream>
+#include<stdlib.h>
 
 struct transaction {
 	int amount;
@@ -24,6 +25,86 @@ struct transaction {
 	char description[20];
 };
 
+
+int compareSTR(char *str1, char *str2, int len){
+	int i;
+	for (i = 0; i < len; i++){
+		if (str1[i] == str2[i])
+			continue;
+		else{
+			if (str1[i] < str2[i])
+				return -1;
+			else
+				return 1;
+		}
+	}
+	return 0;
+}
+
+int CompareDATES(char *str1, char *str2){
+	int day = 0, month = 0, year = 0;
+
+	year = compareSTR(str1 + 6, str2 + 6, 4);
+	month = compareSTR(str1 + 3, str2 + 3, 2);
+	day = compareSTR(str1, str2, 2);
+
+	if (year == 0){
+		if (month == 0){
+			if (day == 0)
+				return 0;
+			else{
+				if (day < 0)
+					return -1;
+				else
+					return 1;
+			}
+		}
+		else{
+			if (month < 0)
+				return -1;
+			else
+				return 1;
+		}
+	}
+	else{
+		if (year < 0)
+			return -1;
+		else
+			return 1;
+	}
+
+}
+
 struct transaction * sortedArraysCommonElements(struct transaction *A, int ALen, struct transaction *B, int BLen) {
-	return NULL;
+
+	int i, j, k;
+	struct transaction  *ptr = NULL;
+
+
+	if (A == NULL || ALen < 0 || B == NULL || BLen < 0)
+		return NULL;
+
+
+	ptr = (struct transaction *)malloc((ALen > BLen ? ALen : BLen)*sizeof(struct transaction));
+
+	i = j = k = 0;
+
+	while (i <= ALen - 1 && j <= BLen - 1){
+		if (CompareDATES(A[i].date, B[j].date) == 0){
+			ptr[k++] = A[i++];
+			j++;
+		}
+		else{
+			if (CompareDATES(A[i].date, B[j].date) < 0)
+				i++;
+			else
+				j++;			
+		}
+	}
+
+	if (k == 0)
+		return NULL;
+
+	return ptr;
+
 }

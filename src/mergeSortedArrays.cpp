@@ -15,6 +15,7 @@ NOTES:
 */
 
 #include <iostream>
+#include<malloc.h>
 
 struct transaction {
 	int amount;
@@ -22,6 +23,98 @@ struct transaction {
 	char description[20];
 };
 
-struct transaction * mergeSortedArrays(struct transaction *A, int ALen, struct transaction *B, int BLen) {
-	return NULL;
+
+typedef struct transaction *sptr;
+
+int compareStr(char *str1, char *str2,int len){
+	int i;
+	for (i = 0; i < len; i++){
+		if (str1[i] == str2[i])
+			continue;
+		else{
+			if (str1[i] < str2[i])
+				return -1;
+			else
+				return 1;
+		}
+	}
+	return 0;
 }
+
+int CompareDates(char *str1, char *str2){
+	int day=0,month=0,year=0;
+
+	year = compareStr(str1 + 6, str2 + 6, 4);
+	month = compareStr(str1 + 3, str2 + 3, 2);
+	day = compareStr(str1, str2, 2);
+
+	if (year == 0){
+		if (month == 0){
+			if (day == 0)
+				return 0;
+			else{
+				if (day < 0)
+					return -1;
+				else
+					return 1;
+			}
+		}
+		else{
+			if (month < 0)
+				return -1;
+			else
+				return 1;
+		}
+	}
+	else{
+		if (year < 0)
+			return -1;
+		else
+			return 1;
+	}
+
+}
+
+
+
+struct transaction * mergeSortedArrays(struct transaction *A, int ALen, struct transaction *B, int BLen) {
+
+	int i, j, k;
+	sptr ptr = NULL;
+
+	
+	if (A == NULL || ALen < 0|| B == NULL ||BLen < 0)
+		return NULL;
+	
+
+	ptr = (sptr)malloc((ALen + BLen)*sizeof(struct transaction));
+	
+	i = j = k = 0;
+
+	while (i <= ALen - 1 && j <= BLen - 1){
+
+		if (CompareDates(A[i].date, B[j].date) == 0){
+			ptr[k++] = A[i++];
+			ptr[k++] = B[j++];
+		}
+		else{
+			if (CompareDates(A[i].date, B[j].date) < 0)
+				ptr[k++] = A[i++];
+			else
+				ptr[k++] = B[j++];
+		}
+	}
+	while (i <= ALen - 1)
+		ptr[k++] = A[i++];
+
+	while (j <= BLen - 1)
+		ptr[k++] = B[j++];
+
+	return ptr;
+
+}
+
+
+
+
+

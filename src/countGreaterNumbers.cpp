@@ -20,6 +20,72 @@ struct transaction {
 	char description[20];
 };
 
+
+
+int comparestr(char *str1, char *str2,int len){
+	int i;
+	for (i = 0; i < len; i++){
+		if (str1[i] == str2[i])
+			continue;
+		else{
+			if (str1[i] < str2[i])
+				return -1;
+			else
+				return 1;
+		}
+	}
+	return 0;
+}
+
+
+int compareDates(char *str1, char *str2){
+	int year,month,day;
+	
+	year = comparestr(str1 + 6, str2 + 6, 4);
+	month = comparestr(str1 + 3, str2 + 3, 2);
+	day = comparestr(str1, str2, 2);
+	if (year == 0){		
+		if (month == 0){			
+			if (day == 0)
+				return 0;
+			else{
+				if (day < 0)
+					return -1;
+				else
+					return 1;
+			}
+
+		}
+		else{
+			if (month < 0)
+				return -1;
+			else
+				return 1;
+		}
+	}
+
+	else{
+		if (year < 0)
+			return -1;
+		else
+			return 1;
+	}
+	
+}
+
+
+
 int countGreaterNumbers(struct transaction *Arr, int len, char *date) {
-	return -1;
+
+	int matches = 0,i,j;
+
+	if (Arr == nullptr || date == nullptr|| len <= 0)
+		return -1;
+
+	for (i = 0; i < len; i++)
+		if (compareDates(Arr[i].date, date) > 0)
+			matches++;
+
+	return matches;
+
 }
